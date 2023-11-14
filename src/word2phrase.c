@@ -86,7 +86,7 @@ void ReadWord( char *word, FILE *fin, char *eof )
 }
 
 // Returns hash value of a word
-int GetWordHash( char *word )
+int GetWordHash( const char *word )
 {
     unsigned long long a, hash = 1;
     for ( a = 0; a < strlen( word ); a++ )
@@ -98,7 +98,7 @@ int GetWordHash( char *word )
 }
 
 // Returns position of a word in the vocabulary; if the word is not found, returns -1
-int SearchVocab( char *word )
+int SearchVocab( const char *word )
 {
     unsigned int hash = GetWordHash( word );
     while ( 1 )
@@ -130,7 +130,7 @@ int ReadWordIndex( FILE *fin, char *eof )
 }
 
 // Adds a word to the vocabulary
-int AddWordToVocab( char *word )
+int AddWordToVocab( const char *word )
 {
     unsigned int hash, length = strlen( word ) + 1;
     if ( length > MAX_STRING )
@@ -159,7 +159,7 @@ int AddWordToVocab( char *word )
 // Used later for sorting by word counts
 int VocabCompare( const void *a, const void *b )
 {
-    return ( (struct vocab_word *)b )->cn - ( (struct vocab_word *)a )->cn;
+    return ( (const struct vocab_word *)b )->cn - ( (const struct vocab_word *)a )->cn;
 }
 
 // Sorts the vocabulary by frequency using word counts
@@ -453,7 +453,7 @@ void TrainModel()
     fclose( fin );
 }
 
-int ArgPos( char *str, int argc, char **argv )
+int ArgPos( const char *str, int argc, char **argv )
 {
     int a;
     for ( a = 1; a < argc; a++ )
