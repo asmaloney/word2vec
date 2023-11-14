@@ -1,1 +1,6 @@
 bin
+data/*.zip
+data/*.bin
+data/classes.*
+data/news.2012.en.shuffled*
+data/text8

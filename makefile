@@ -5,7 +5,6 @@ CFLAGS = -lm -pthread -O3 -march=native -Wall -funroll-loops -Wno-unused-result
 
 SRC_DIR=./src
 BIN_DIR=./bin
-SCRIPTS_DIR=./scripts
 
 all: word2vec word2phrase distance word-analogy compute-accuracy
 
@@ -23,7 +22,6 @@ word-analogy : ${SRC_DIR}/word-analogy.c
 
 compute-accuracy : ${SRC_DIR}/compute-accuracy.c
 	$(CC) ${SRC_DIR}/compute-accuracy.c -o ${BIN_DIR}/compute-accuracy $(CFLAGS)
-	chmod +x ${SCRIPTS_DIR}/*.sh
 
 clean:
 	rm -rf ${BIN_DIR}/word2vec ${BIN_DIR}/word2phrase ${BIN_DIR}/distance ${BIN_DIR}/word-analogy ${BIN_DIR}/compute-accuracy
