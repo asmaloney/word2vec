@@ -23,13 +23,13 @@ const long long max_w = 50;      // max length of vocabulary entries
 
 int main( int argc, char **argv )
 {
-    FILE *f;
+    FILE *f = NULL;
     char st1[max_size];
     char bestw[N][max_size];
     char file_name[max_size], st[100][max_size];
     float dist, len, bestd[N], vec[max_size];
     long long words, size, a, b, c, d, cn, bi[100];
-    float *M;
+    float *M = NULL;
     char *vocab;
     if ( argc < 2 )
     {

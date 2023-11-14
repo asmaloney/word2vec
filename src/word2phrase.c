@@ -31,7 +31,7 @@ struct vocab_word
 };
 
 char train_file[MAX_STRING], output_file[MAX_STRING];
-struct vocab_word *vocab;
+struct vocab_word *vocab = NULL;
 int debug_mode = 2, min_count = 5, *vocab_hash, min_reduce = 1;
 long long vocab_max_size = 10000, vocab_size = 0;
 long long train_words = 0;
@@ -236,9 +236,16 @@ void ReduceVocab()
 
 void LearnVocabFromTrainFile()
 {
-    char word[MAX_STRING], last_word[MAX_STRING], bigram_word[MAX_STRING * 2], eof = 0;
-    FILE *fin;
+    char word[MAX_STRING];
+    char last_word[MAX_STRING];
+    char bigram_word[MAX_STRING * 2];
+    char eof = 0;
+    FILE *fin = NULL;
     long long a, b, i, start = 1;
+    memset( &word, '\0', MAX_STRING );
+    memset( &last_word, '\0', MAX_STRING );
+    memset( &bigram_word, '\0', MAX_STRING );
+
     for ( a = 0; a < vocab_hash_size; a++ )
     {
         vocab_hash[a] = -1;
