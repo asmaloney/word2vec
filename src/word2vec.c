@@ -966,6 +966,7 @@ void TrainModel( void )
     }
     if ( output_file[0] == 0 )
     {
+        free( pt );
         return;
     }
     InitNet();
@@ -982,6 +983,8 @@ void TrainModel( void )
     {
         pthread_join( pt[a], NULL );
     }
+    free( pt );
+
     fo = fopen( output_file, "wb" );
     if ( classes == 0 )
     {

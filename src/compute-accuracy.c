@@ -65,6 +65,8 @@ int main( int argc, char **argv )
     if ( M == NULL )
     {
         printf( "Cannot allocate memory: %lld MB\n", words * size * sizeof( float ) / 1048576 );
+        free( vocab );
+        fclose( f );
         return -1;
     }
     for ( b = 0; b < words; b++ )

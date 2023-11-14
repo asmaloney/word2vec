@@ -52,6 +52,8 @@ int main( int argc, char **argv )
     {
         printf( "Cannot allocate memory: %lld MB    %lld  %lld\n",
                 (long long)words * size * sizeof( float ) / 1048576, words, size );
+        free( vocab );
+        fclose( f );
         return -1;
     }
     for ( b = 0; b < words; b++ )
