@@ -37,15 +37,13 @@ long long vocab_max_size = 10000, vocab_size = 0;
 long long train_words = 0;
 real threshold = 100;
 
-unsigned long long next_random = 1;
-
 // Reads a single word from a file, assuming space + tab + EOL to be word boundaries
 void ReadWord( char *word, FILE *fin, char *eof )
 {
-    int a = 0, ch;
+    int a = 0;
     while ( 1 )
     {
-        ch = getc_unlocked( fin );
+        int ch = getc_unlocked( fin );
         if ( ch == EOF )
         {
             *eof = 1;
@@ -168,7 +166,6 @@ int VocabCompare( const void *a, const void *b )
 void SortVocab()
 {
     int a;
-    unsigned int hash;
     // Sort the vocabulary and keep </s> at the first position
     qsort( &vocab[1], vocab_size - 1, sizeof( struct vocab_word ), VocabCompare );
     for ( a = 0; a < vocab_hash_size; a++ )
@@ -186,7 +183,7 @@ void SortVocab()
         else
         {
             // Hash will be re-computed, as after the sorting it is not actual
-            hash = GetWordHash( vocab[a].word );
+            unsigned int hash = GetWordHash( vocab[a].word );
             while ( vocab_hash[hash] != -1 )
             {
                 hash = ( hash + 1 ) % vocab_hash_size;
@@ -201,7 +198,6 @@ void SortVocab()
 void ReduceVocab()
 {
     int a, b = 0;
-    unsigned int hash;
     for ( a = 0; a < vocab_size; a++ )
     {
         if ( vocab[a].cn > min_reduce )
@@ -223,7 +219,7 @@ void ReduceVocab()
     for ( a = 0; a < vocab_size; a++ )
     {
         // Hash will be re-computed, as it is not actual
-        hash = GetWordHash( vocab[a].word );
+        unsigned int hash = GetWordHash( vocab[a].word );
         while ( vocab_hash[hash] != -1 )
         {
             hash = ( hash + 1 ) % vocab_hash_size;

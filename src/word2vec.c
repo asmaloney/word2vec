@@ -84,10 +84,10 @@ void InitUnigramTable()
 // Reads a single word from a file, assuming space + tab + EOL to be word boundaries
 void ReadWord( char *word, FILE *fin, char *eof )
 {
-    int a = 0, ch;
+    int a = 0;
     while ( 1 )
     {
-        ch = getc_unlocked( fin );
+        int ch = getc_unlocked( fin );
         if ( ch == EOF )
         {
             *eof = 1;
@@ -259,7 +259,6 @@ void SortVocab()
 void ReduceVocab()
 {
     int a, b = 0;
-    unsigned int hash;
     for ( a = 0; a < vocab_size; a++ )
     {
         if ( vocab[a].cn > min_reduce )
@@ -281,7 +280,7 @@ void ReduceVocab()
     for ( a = 0; a < vocab_size; a++ )
     {
         // Hash will be re-computed, as it is not actual
-        hash = GetWordHash( vocab[a].word );
+        unsigned int hash = GetWordHash( vocab[a].word );
         while ( vocab_hash[hash] != -1 )
         {
             hash = ( hash + 1 ) % vocab_hash_size;
@@ -296,7 +295,7 @@ void ReduceVocab()
 // Frequent words will have short uniqe binary codes
 void CreateBinaryTree()
 {
-    long long a, b, i, min1i, min2i, pos1, pos2, point[MAX_CODE_LENGTH];
+    long long a, min1i, min2i, pos1, pos2, point[MAX_CODE_LENGTH];
     char code[MAX_CODE_LENGTH];
     long long *count = (long long *)calloc( vocab_size * 2 + 1, sizeof( long long ) );
     long long *binary = (long long *)calloc( vocab_size * 2 + 1, sizeof( long long ) );
@@ -359,8 +358,8 @@ void CreateBinaryTree()
     // Now assign binary code to each vocabulary word
     for ( a = 0; a < vocab_size; a++ )
     {
-        b = a;
-        i = 0;
+        long long b = a;
+        long long i = 0;
         while ( 1 )
         {
             code[i] = binary[b];
@@ -404,6 +403,7 @@ void LearnVocabFromTrainFile()
     AddWordToVocab( (char *)"</s>" );
     while ( 1 )
     {
+        long long i = 0;
         ReadWord( word, fin, &eof );
         if ( eof )
         {
@@ -455,7 +455,7 @@ void SaveVocab()
 
 void ReadVocab()
 {
-    long long a, i = 0;
+    long long a = 0;
     char c, eof = 0;
     char word[MAX_STRING];
     FILE *fin = fopen( read_vocab_file, "rb" );
@@ -478,7 +478,6 @@ void ReadVocab()
         }
         a = AddWordToVocab( word );
         fscanf( fin, "%lld%c", &vocab[a].cn, &c );
-        i++;
     }
     SortVocab();
     if ( debug_mode > 0 )
@@ -501,7 +500,7 @@ void InitNet()
 {
     long long a, b;
     unsigned long long next_random = 1;
-    a = posix_memalign( (void **)&syn0, 128, (long long)vocab_size * layer1_size * sizeof( real ) );
+    posix_memalign( (void **)&syn0, 128, (long long)vocab_size * layer1_size * sizeof( real ) );
     if ( syn0 == NULL )
     {
         printf( "Memory allocation failed\n" );
@@ -509,8 +508,7 @@ void InitNet()
     }
     if ( hs )
     {
-        a = posix_memalign( (void **)&syn1, 128,
-                            (long long)vocab_size * layer1_size * sizeof( real ) );
+        posix_memalign( (void **)&syn1, 128, (long long)vocab_size * layer1_size * sizeof( real ) );
         if ( syn1 == NULL )
         {
             printf( "Memory allocation failed\n" );
@@ -526,8 +524,8 @@ void InitNet()
     }
     if ( negative > 0 )
     {
-        a = posix_memalign( (void **)&syn1neg, 128,
-                            (long long)vocab_size * layer1_size * sizeof( real ) );
+        posix_memalign( (void **)&syn1neg, 128,
+                        (long long)vocab_size * layer1_size * sizeof( real ) );
         if ( syn1neg == NULL )
         {
             printf( "Memory allocation failed\n" );
