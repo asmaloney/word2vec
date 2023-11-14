@@ -113,7 +113,6 @@ int SearchVocab( const char *word )
         }
         hash = ( hash + 1 ) % vocab_hash_size;
     }
-    return -1;
 }
 
 // Reads a word and returns its index in the vocabulary
@@ -163,7 +162,7 @@ int VocabCompare( const void *a, const void *b )
 }
 
 // Sorts the vocabulary by frequency using word counts
-void SortVocab()
+void SortVocab( void )
 {
     int a;
     // Sort the vocabulary and keep </s> at the first position
@@ -195,7 +194,7 @@ void SortVocab()
 }
 
 // Reduces the vocabulary by removing infrequent tokens
-void ReduceVocab()
+void ReduceVocab( void )
 {
     int a, b = 0;
     for ( a = 0; a < vocab_size; a++ )
@@ -230,7 +229,7 @@ void ReduceVocab()
     min_reduce++;
 }
 
-void LearnVocabFromTrainFile()
+void LearnVocabFromTrainFile( void )
 {
     char word[MAX_STRING];
     char last_word[MAX_STRING];
@@ -337,7 +336,7 @@ void LearnVocabFromTrainFile()
     fclose( fin );
 }
 
-void TrainModel()
+void TrainModel( void )
 {
     long long a, b, pa = 0, pb = 0, pab = 0, oov, i, li = -1, cn = 0;
     char word[MAX_STRING], last_word[MAX_STRING], bigram_word[MAX_STRING * 2], eof = 0;

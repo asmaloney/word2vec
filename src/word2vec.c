@@ -54,7 +54,7 @@ int hs = 0, negative = 5;
 const int table_size = 1e8;
 int *table = NULL;
 
-void InitUnigramTable()
+void InitUnigramTable( void )
 {
     int a, i;
     double train_words_pow = 0;
@@ -155,7 +155,6 @@ int SearchVocab( const char *word )
         }
         hash = ( hash + 1 ) % vocab_hash_size;
     }
-    return -1;
 }
 
 // Reads a word and returns its index in the vocabulary
@@ -214,7 +213,7 @@ int VocabCompare( const void *a, const void *b )
 }
 
 // Sorts the vocabulary by frequency using word counts
-void SortVocab()
+void SortVocab( void )
 {
     int a, size;
     unsigned int hash;
@@ -256,7 +255,7 @@ void SortVocab()
 }
 
 // Reduces the vocabulary by removing infrequent tokens
-void ReduceVocab()
+void ReduceVocab( void )
 {
     int a, b = 0;
     for ( a = 0; a < vocab_size; a++ )
@@ -293,7 +292,7 @@ void ReduceVocab()
 
 // Create binary Huffman tree using the word counts
 // Frequent words will have short uniqe binary codes
-void CreateBinaryTree()
+void CreateBinaryTree( void )
 {
     long long a, min1i, min2i, pos1, pos2, point[MAX_CODE_LENGTH];
     char code[MAX_CODE_LENGTH];
@@ -384,7 +383,7 @@ void CreateBinaryTree()
     free( parent_node );
 }
 
-void LearnVocabFromTrainFile()
+void LearnVocabFromTrainFile( void )
 {
     char word[MAX_STRING], eof = 0;
     FILE *fin = NULL;
@@ -442,7 +441,7 @@ void LearnVocabFromTrainFile()
     fclose( fin );
 }
 
-void SaveVocab()
+void SaveVocab( void )
 {
     long long i;
     FILE *fo = fopen( save_vocab_file, "wb" );
@@ -453,7 +452,7 @@ void SaveVocab()
     fclose( fo );
 }
 
-void ReadVocab()
+void ReadVocab( void )
 {
     long long a = 0;
     char c, eof = 0;
@@ -496,7 +495,7 @@ void ReadVocab()
     fclose( fin );
 }
 
-void InitNet()
+void InitNet( void )
 {
     long long a, b;
     unsigned long long next_random = 1;
@@ -946,7 +945,7 @@ void *TrainModelThread( void *id )
     pthread_exit( NULL );
 }
 
-void TrainModel()
+void TrainModel( void )
 {
     long a, b, c, d;
     FILE *fo = NULL;
