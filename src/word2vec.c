@@ -227,7 +227,7 @@ void SortVocab( void )
     train_words = 0;
     for ( a = 0; a < size; a++ )
     {
-        // Words occuring less than min_count times will be discarded from the vocab
+        // Words occurring less than min_count times will be discarded from the vocab
         if ( ( vocab[a].cn < min_count ) && ( a != 0 ) )
         {
             vocab_size--;
@@ -291,7 +291,7 @@ void ReduceVocab( void )
 }
 
 // Create binary Huffman tree using the word counts
-// Frequent words will have short uniqe binary codes
+// Frequent words will have short unique binary codes
 void CreateBinaryTree( void )
 {
     long long a, min1i, min2i, pos1, pos2, point[MAX_CODE_LENGTH];
@@ -1145,7 +1145,7 @@ int main( int argc, char **argv )
         printf( "\t-debug <int>\n" );
         printf( "\t\tSet the debug mode (default = 2 = more info during training)\n" );
         printf( "\t-binary <int>\n" );
-        printf( "\t\tSave the resulting vectors in binary moded; default is 0 (off)\n" );
+        printf( "\t\tSave the resulting vectors in binary mode; default is 0 (off)\n" );
         printf( "\t-save-vocab <file>\n" );
         printf( "\t\tThe vocabulary will be saved to <file>\n" );
         printf( "\t-read-vocab <file>\n" );
