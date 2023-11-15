@@ -12,7 +12,7 @@ DATA_DIR=./data
 # Get the data if we don't have it
 if [ ! -e ${DATA_DIR}/text8 ]; then
   wget https://mattmahoney.net/dc/text8.zip -O ${DATA_DIR}/text8.zip
-  unzip ${DATA_DIR}/text8.zip
+  unzip ${DATA_DIR}/text8.zip -d ${DATA_DIR}
 fi
 
 # Train the data if we haven't already

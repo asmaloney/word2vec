@@ -12,7 +12,7 @@ DATA_DIR=./data
 # Get the data if we don't have it
 if [ ! -e ${DATA_DIR}/news.2012.en.shuffled ]; then
   wget http://www.statmt.org/wmt14/training-monolingual-news-crawl/news.2012.en.shuffled.gz -O ${DATA_DIR}/news.2012.en.shuffled.gz
-  gzip -d ${DATA_DIR}/news.2012.en.shuffled.gz -f
+  gzip -f -k -d ${DATA_DIR}/news.2012.en.shuffled.gz
 
   sed -e "s/’/'/g" -e "s/′/'/g" -e "s/''/ /g" < ${DATA_DIR}/news.2012.en.shuffled | tr -c "A-Za-z'_ \n" " " > ${DATA_DIR}/news.2012.en.shuffled-norm0
 fi
