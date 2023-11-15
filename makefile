@@ -9,18 +9,23 @@ BIN_DIR=./bin
 all: word2vec word2phrase distance word-analogy compute-accuracy
 
 word2vec : ${SRC_DIR}/word2vec.c
+	mkdir -p ${BIN_DIR}
 	$(CC) ${SRC_DIR}/word2vec.c -o ${BIN_DIR}/word2vec $(CFLAGS)
 
 word2phrase : ${SRC_DIR}/word2phrase.c
+	mkdir -p ${BIN_DIR}
 	$(CC) ${SRC_DIR}/word2phrase.c -o ${BIN_DIR}/word2phrase $(CFLAGS)
 
 distance : ${SRC_DIR}/distance.c
+	mkdir -p ${BIN_DIR}
 	$(CC) ${SRC_DIR}/distance.c -o ${BIN_DIR}/distance $(CFLAGS)
 
 word-analogy : ${SRC_DIR}/word-analogy.c
+	mkdir -p ${BIN_DIR}
 	$(CC) ${SRC_DIR}/word-analogy.c -o ${BIN_DIR}/word-analogy $(CFLAGS)
 
 compute-accuracy : ${SRC_DIR}/compute-accuracy.c
+	mkdir -p ${BIN_DIR}
 	$(CC) ${SRC_DIR}/compute-accuracy.c -o ${BIN_DIR}/compute-accuracy $(CFLAGS)
 
 clean:
