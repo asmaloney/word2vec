@@ -778,11 +778,8 @@ void *TrainModelThread( void *id )
                 if ( a != window )
                 {
                     c = sentence_position - window + a;
-                    if ( c < 0 )
-                    {
-                        continue;
-                    }
-                    if ( c >= sentence_length )
+
+                    if ( ( c < 0 ) || ( c >= sentence_length ) )
                     {
                         continue;
                     }
@@ -822,11 +819,8 @@ void *TrainModelThread( void *id )
                         {
                             f += neu1[c] * syn1[c + l2];
                         }
-                        if ( f <= -MAX_EXP )
-                        {
-                            continue;
-                        }
-                        else if ( f >= MAX_EXP )
+
+                        if ( ( f <= -MAX_EXP ) || ( f >= MAX_EXP ) )
                         {
                             continue;
                         }
@@ -920,11 +914,8 @@ void *TrainModelThread( void *id )
                     if ( a != window )
                     {
                         c = sentence_position - window + a;
-                        if ( c < 0 )
-                        {
-                            continue;
-                        }
-                        if ( c >= sentence_length )
+
+                        if ( ( c < 0 ) || ( c >= sentence_length ) )
                         {
                             continue;
                         }
@@ -951,11 +942,8 @@ void *TrainModelThread( void *id )
                 if ( a != window )
                 {
                     c = sentence_position - window + a;
-                    if ( c < 0 )
-                    {
-                        continue;
-                    }
-                    if ( c >= sentence_length )
+
+                    if ( ( c < 0 ) || ( c >= sentence_length ) )
                     {
                         continue;
                     }
@@ -984,11 +972,8 @@ void *TrainModelThread( void *id )
                             {
                                 f += syn0[c + l1] * syn1[c + l2];
                             }
-                            if ( f <= -MAX_EXP )
-                            {
-                                continue;
-                            }
-                            else if ( f >= MAX_EXP )
+
+                            if ( ( f <= -MAX_EXP ) || ( f >= MAX_EXP ) )
                             {
                                 continue;
                             }
