@@ -24,7 +24,7 @@
 #define MAX_SENTENCE_LENGTH 1000
 #define MAX_CODE_LENGTH 40
 
-const int vocab_hash_size = 30000000; // Maximum 30 * 0.7 = 21M words in the vocabulary
+static const int vocab_hash_size = 30000000; // Maximum 30 * 0.7 = 21M words in the vocabulary
 
 typedef float real; // Precision of float numbers
 
@@ -32,29 +32,54 @@ struct vocab_word
 {
     long long cn;
     int *point;
-    char *word, *code, codelen;
+    char *word;
+    char *code;
+    char codelen;
 };
 
-char train_file[MAX_STRING], output_file[MAX_STRING];
-char save_vocab_file[MAX_STRING], read_vocab_file[MAX_STRING];
-struct vocab_word *vocab = NULL;
-int binary = 0, cbow = 1, debug_mode = 2, window = 5, min_count = 5, num_threads = 12,
-    min_reduce = 1;
-int *vocab_hash = NULL;
-long long vocab_max_size = 1000, vocab_size = 0, layer1_size = 100;
-long long train_words = 0, word_count_actual = 0, iter = 5, file_size = 0, classes = 0;
-real alpha = 0.025, starting_alpha, sample = 1e-3;
-real *syn0 = NULL;
-real *syn1 = NULL;
-real *syn1neg = NULL;
-real *expTable = NULL;
-clock_t start;
+static char train_file[MAX_STRING];
+static char output_file[MAX_STRING];
+static char save_vocab_file[MAX_STRING];
+static char read_vocab_file[MAX_STRING];
 
-int hs = 0, negative = 5;
-const int table_size = 1e8;
-int *table = NULL;
+static struct vocab_word *vocab = NULL;
 
-void InitUnigramTable( void )
+static int binary = 0;
+static int cbow = 1;
+static int debug_mode = 2;
+static int window = 5;
+static int min_count = 5;
+static int num_threads = 12;
+static int min_reduce = 1;
+
+static int *vocab_hash = NULL;
+static long long vocab_max_size = 1000;
+static long long vocab_size = 0;
+
+static long long layer1_size = 100;
+
+static long long train_words = 0;
+static long long word_count_actual = 0;
+static long long iter = 5;
+static long long file_size = 0;
+static long long classes = 0;
+
+static real alpha = 0.025;
+static real starting_alpha;
+static real sample = 1e-3;
+static real *syn0 = NULL;
+static real *syn1 = NULL;
+static real *syn1neg = NULL;
+static real *expTable = NULL;
+static clock_t start;
+
+static int hs = 0;
+static int negative = 5;
+
+static const int table_size = 100000000;
+static int *table = NULL;
+
+static void InitUnigramTable( void )
 {
     int a, i;
     double train_words_pow = 0;
@@ -88,7 +113,7 @@ void InitUnigramTable( void )
 }
 
 // Reads a single word from a file, assuming space + tab + EOL to be word boundaries
-void ReadWord( char *word, FILE *fin, char *eof )
+static void ReadWord( char *word, FILE *fin, char *eof )
 {
     int a = 0;
     while ( 1 )
@@ -140,7 +165,7 @@ void ReadWord( char *word, FILE *fin, char *eof )
 }
 
 // Returns hash value of a word
-int GetWordHash( const char *word )
+static int GetWordHash( const char *word )
 {
     unsigned long long a, hash = 0;
     for ( a = 0; a < strlen( word ); a++ )
@@ -152,7 +177,7 @@ int GetWordHash( const char *word )
 }
 
 // Returns position of a word in the vocabulary; if the word is not found, returns -1
-int SearchVocab( const char *word )
+static int SearchVocab( const char *word )
 {
     unsigned int hash = GetWordHash( word );
 
@@ -173,7 +198,7 @@ int SearchVocab( const char *word )
 }
 
 // Reads a word and returns its index in the vocabulary
-int ReadWordIndex( FILE *fin, char *eof )
+static int ReadWordIndex( FILE *fin, char *eof )
 {
     char word[MAX_STRING], eof_l = 0;
 
@@ -189,7 +214,7 @@ int ReadWordIndex( FILE *fin, char *eof )
 }
 
 // Adds a word to the vocabulary
-int AddWordToVocab( const char *word )
+static int AddWordToVocab( const char *word )
 {
     unsigned int hash, length = strlen( word ) + 1;
 
@@ -223,7 +248,7 @@ int AddWordToVocab( const char *word )
 }
 
 // Used later for sorting by word counts
-int VocabCompare( const void *a, const void *b )
+static int VocabCompare( const void *a, const void *b )
 {
     long long l = ( (const struct vocab_word *)b )->cn - ( (const struct vocab_word *)a )->cn;
 
@@ -240,7 +265,7 @@ int VocabCompare( const void *a, const void *b )
 }
 
 // Sorts the vocabulary by frequency using word counts
-void SortVocab( void )
+static void SortVocab( void )
 {
     int a, size;
     unsigned int hash;
@@ -289,7 +314,7 @@ void SortVocab( void )
 }
 
 // Reduces the vocabulary by removing infrequent tokens
-void ReduceVocab( void )
+static void ReduceVocab( void )
 {
     int a, b = 0;
 
@@ -334,7 +359,7 @@ void ReduceVocab( void )
 
 // Create binary Huffman tree using the word counts
 // Frequent words will have short unique binary codes
-void CreateBinaryTree( void )
+static void CreateBinaryTree( void )
 {
     long long a, min1i, min2i, pos1, pos2, point[MAX_CODE_LENGTH];
     char code[MAX_CODE_LENGTH];
@@ -438,7 +463,7 @@ void CreateBinaryTree( void )
     free( parent_node );
 }
 
-void LearnVocabFromTrainFile( void )
+static void LearnVocabFromTrainFile( void )
 {
     char word[MAX_STRING], eof = 0;
     FILE *fin = NULL;
@@ -514,7 +539,7 @@ void LearnVocabFromTrainFile( void )
     fclose( fin );
 }
 
-void SaveVocab( void )
+static void SaveVocab( void )
 {
     long long i;
     FILE *fo = fopen( save_vocab_file, "wb" );
@@ -527,7 +552,7 @@ void SaveVocab( void )
     fclose( fo );
 }
 
-void ReadVocab( void )
+static void ReadVocab( void )
 {
     long long a = 0;
     char c, eof = 0;
@@ -584,7 +609,7 @@ void ReadVocab( void )
     fclose( fin );
 }
 
-void InitNet( void )
+static void InitNet( void )
 {
     long long a, b;
     unsigned long long next_random = 1;
@@ -648,7 +673,7 @@ void InitNet( void )
     CreateBinaryTree();
 }
 
-void *TrainModelThread( void *id )
+static void *TrainModelThread( void *id )
 {
     long long a, b, d, cw, word, last_word, sentence_length = 0, sentence_position = 0;
     long long word_count = 0, last_word_count = 0, sen[MAX_SENTENCE_LENGTH + 1];
@@ -1093,7 +1118,7 @@ void *TrainModelThread( void *id )
     pthread_exit( NULL );
 }
 
-void TrainModel( void )
+static void TrainModel( void )
 {
     long a, b, c;
     FILE *fo = NULL;
@@ -1265,7 +1290,7 @@ void TrainModel( void )
     fclose( fo );
 }
 
-int ArgPos( const char *str, int argc, char **argv )
+static int ArgPos( const char *str, int argc, char **argv )
 {
     int a;
     for ( a = 1; a < argc; a++ )
