@@ -147,8 +147,8 @@ int GetWordHash( const char *word )
     {
         hash = hash * 257 + word[a];
     }
-    hash = hash % vocab_hash_size;
-    return hash;
+
+    return hash % vocab_hash_size;
 }
 
 // Returns position of a word in the vocabulary; if the word is not found, returns -1
@@ -231,7 +231,7 @@ int VocabCompare( const void *a, const void *b )
     {
         return 1;
     }
-    if ( l < 0 )
+    else if ( l < 0 )
     {
         return -1;
     }
@@ -1093,7 +1093,7 @@ void *TrainModelThread( void *id )
 
 void TrainModel( void )
 {
-    long a, b, c, d;
+    long a, b, c;
     FILE *fo = NULL;
     pthread_t *pt = (pthread_t *)malloc( num_threads * sizeof( pthread_t ) );
 
@@ -1186,6 +1186,8 @@ void TrainModel( void )
 
         for ( a = 0; a < iter; a++ )
         {
+            long d;
+
             for ( b = 0; b < clcn * layer1_size; b++ )
             {
                 cent[b] = 0;
