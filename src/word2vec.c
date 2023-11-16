@@ -761,14 +761,10 @@ void *TrainModelThread( void *id )
         {
             continue;
         }
-        for ( c = 0; c < layer1_size; c++ )
-        {
-            neu1[c] = 0;
-        }
-        for ( c = 0; c < layer1_size; c++ )
-        {
-            neu1e[c] = 0;
-        }
+
+        memset( neu1, '\0', layer1_size * sizeof( real ) );
+        memset( neu1e, '\0', layer1_size * sizeof( real ) );
+
         next_random = next_random * (unsigned long long)25214903917 + 11;
         b = next_random % window;
 
@@ -972,10 +968,9 @@ void *TrainModelThread( void *id )
                     }
 
                     l1 = last_word * layer1_size;
-                    for ( c = 0; c < layer1_size; c++ )
-                    {
-                        neu1e[c] = 0;
-                    }
+
+                    memset( neu1e, '\0', layer1_size * sizeof( real ) );
+
                     // HIERARCHICAL SOFTMAX
                     if ( hs )
                     {
