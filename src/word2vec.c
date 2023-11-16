@@ -932,11 +932,14 @@ void *TrainModelThread( void *id )
                         {
                             continue;
                         }
+
                         last_word = sen[c];
+
                         if ( last_word == -1 )
                         {
                             continue;
                         }
+
                         for ( c = 0; c < layer1_size; c++ )
                         {
                             syn0[c + last_word * layer1_size] += neu1e[c];
@@ -967,6 +970,7 @@ void *TrainModelThread( void *id )
                     {
                         continue;
                     }
+
                     l1 = last_word * layer1_size;
                     for ( c = 0; c < layer1_size; c++ )
                     {
@@ -979,6 +983,7 @@ void *TrainModelThread( void *id )
                         {
                             f = 0;
                             l2 = vocab[word].point[d] * layer1_size;
+
                             // Propagate hidden -> output
                             for ( c = 0; c < layer1_size; c++ )
                             {
@@ -997,13 +1002,16 @@ void *TrainModelThread( void *id )
                                 f = expTable[(int)( ( f + MAX_EXP ) *
                                                     ( EXP_TABLE_SIZE / MAX_EXP / 2 ) )];
                             }
+
                             // 'g' is the gradient multiplied by the learning rate
                             g = ( 1 - vocab[word].code[d] - f ) * alpha;
+
                             // Propagate errors output -> hidden
                             for ( c = 0; c < layer1_size; c++ )
                             {
                                 neu1e[c] += g * syn1[c + l2];
                             }
+
                             // Learn weights hidden -> output
                             for ( c = 0; c < layer1_size; c++ )
                             {
@@ -1025,22 +1033,28 @@ void *TrainModelThread( void *id )
                             {
                                 next_random = next_random * (unsigned long long)25214903917 + 11;
                                 target = table[( next_random >> 16 ) % table_size];
+
                                 if ( target == 0 )
                                 {
                                     target = next_random % ( vocab_size - 1 ) + 1;
                                 }
+
                                 if ( target == word )
                                 {
                                     continue;
                                 }
+
                                 label = 0;
                             }
+
                             l2 = target * layer1_size;
                             f = 0;
+
                             for ( c = 0; c < layer1_size; c++ )
                             {
                                 f += syn0[c + l1] * syn1neg[c + l2];
                             }
+
                             if ( f > MAX_EXP )
                             {
                                 g = ( label - 1 ) * alpha;
@@ -1056,16 +1070,19 @@ void *TrainModelThread( void *id )
                                                       ( EXP_TABLE_SIZE / MAX_EXP / 2 ) )] ) *
                                     alpha;
                             }
+
                             for ( c = 0; c < layer1_size; c++ )
                             {
                                 neu1e[c] += g * syn1neg[c + l2];
                             }
+
                             for ( c = 0; c < layer1_size; c++ )
                             {
                                 syn1neg[c + l2] += g * syn0[c + l1];
                             }
                         }
                     }
+
                     // Learn weights input -> hidden
                     for ( c = 0; c < layer1_size; c++ )
                     {
